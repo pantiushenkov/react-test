@@ -1,40 +1,48 @@
 import * as PlayerActionTypes from "../constants/player";
+const uuidv1 = require('uuid/v1');
 
 const INITIAL_STATE = {
-	players: [{
-		name: 'Jim Hoskins',
+	 players: [{
+		name: 'Petya',
 	  score: 31,
 		created: '11/8/2016',
-		updated: '11/9/2016'
+		updated: '11/9/2016',
+		id :1
 	},
 	{
-		name: 'Andrew Chalkley',
+		name: 'Vasya',
 		score: 20,
 		created: '11/9/2016',
-		updated: '11/10/2016'
+		updated: '11/10/2016',
+		id :2
 	},
 	{
-		name: 'Alena Holligan',
+		name: 'Vova',
 		score: 50,
 		created: '11/11/2016',
-		updated: '11/12/2016'
+		updated: '11/12/2016',
+		id :3
 	}
 	],
-	selectedPlayerIndex: -1
+	selectedPlayerIndex: -1,
+
+}
+const getDate = () => {
+	let date = new Date();
+	let day = date.getDate();
+	let month = date.getMonth() + 1;
+	let year = date.getFullYear();
+	return `${day}/${month}/${year}`;
 }
 
 export default function Player(state = INITIAL_STATE,action){
-    let date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
     switch (action.type) {
       case PlayerActionTypes.ADD_PLAYER: {
         const addPlayerList = [...state.players,{
             name:action.name,
             score:0,
-            created: `${day}/${month}/${year}`
+						id:  uuidv1(),
+            created:getDate()
         }];
         return {
           ...state,
@@ -42,12 +50,11 @@ export default function Player(state = INITIAL_STATE,action){
         }
       }
       case PlayerActionTypes.REMOVE_PLAYER:{
-        const removePlayerList = [...state.players,{
-          ...state.splice(action.index,action.index + 1)
-        }]
-        return {
+				const newPlayers = state.players.slice();
+				newPlayers.splice(action.index,1);
+				return {
           ...state,
-          players:removePlayerList
+          players:newPlayers
         }
       }
       case PlayerActionTypes.UPDATE_PLAYER_SCORE:{
@@ -56,7 +63,7 @@ export default function Player(state = INITIAL_STATE,action){
               return {
                 ...player,
                 score:player.score + action.score,
-                updated:`${day}/${month}/${year}`
+                updated:getDate()
               }
             }
             return player;
@@ -66,7 +73,7 @@ export default function Player(state = INITIAL_STATE,action){
             players:updatePlayerList
         }
       }
-      case PlayerActionTypes.SELECT_PLAYER:
+      case PlayerActionTypes.PRINT_PLAYER_INFO:
           return {
             ...state,
             selectedPlayerIndex: action.index

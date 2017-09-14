@@ -7,19 +7,17 @@ import PlayerDetail from "../components/PlayerDetail";
 import AddPlayerForm from "../components/AddPlayerForm";
 import * as PlayerActionCreators from "../actions/player";
 
-class Scoreboard extends Component{
+class Scoreboard extends Component {
 
   static propTypes = {
     players: PropTypes.array.isRequired
   }
+
   render() {
 
-    const { dispatch, players, selectedPlayerIndex} = this.props;
-
-    const addPlayer = bindActionCreators(PlayerActionCreators.addPlayer,dispatch);
-    const removePlayer = bindActionCreators(PlayerActionCreators.removePlayer,dispatch);
-    const updatePlayerScore = bindActionCreators(PlayerActionCreators.updatePlayerScore,dispatch);
-    const selectPlayerIndex = bindActionCreators(PlayerActionCreators.selectPlayer,dispatch);
+    const { dispatch, players, selectedPlayerIndex, actions: {
+      updatePlayerScore,printPlayerInfo,removePlayer,addPlayer
+    }} = this.props;
 
     let selectedPlayer;
     if(selectedPlayerIndex != -1){
@@ -30,11 +28,11 @@ class Scoreboard extends Component{
         <Player
         index = {index}
         name = {player.name}
-        key = {player.name}
+        key = {player.id}
         score = {player.score}
         removePlayer = {removePlayer}
         updatePlayerScore = {updatePlayerScore}
-        selectPlayerIndex = {selectPlayerIndex}
+        printPlayerInfo = {printPlayerInfo}
         />
     )
 
@@ -59,5 +57,10 @@ const mapStateToProps = state => ({
   selectedPlayerIndex : state.selectedPlayerIndex
 })
 
+const mapDispatchToProps = dispatch => {
+  return  {
+      actions: bindActionCreators(PlayerActionCreators,dispatch)
+  }
+}
 
-export default connect(mapStateToProps)(Scoreboard);
+export default connect(mapStateToProps,mapDispatchToProps)(Scoreboard);
